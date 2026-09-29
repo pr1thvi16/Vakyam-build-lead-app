@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 import { createPrivilegedClient } from '@/lib/supabase/server'
+import { scoreLead } from '@/lib/scoring'
 
 const leadSchema = z.object({
   intent: z.enum(['buyer', 'offplan', 'tenant', 'landlord']),
@@ -14,41 +15,24 @@ const leadSchema = z.object({
   lang: z.enum(['en', 'ar']),
 })
 
-function scoreLead(input: z.infer<typeof leadSchema>) {
-  let score = 20
-  if (input.intent === 'buyer' || input.intent === 'offplan') score += 15
-  if (input.intent === 'landlord') score += 10
-  if (input.budget_aed >= 2_000_000) score += 20
-  else if (input.budget_aed >= 750_000) score += 12
-  else if (input.budget_aed >= 250_000) score += 6
-  if (input.timeline === 'immediate') score += 35
-  else if (input.timeline === '1-3m') score += 25
-  else if (input.timeline === '3-6m') score += 12
-  if (/not ready|لست مستعد|غير مستعد/i.test(input.notes ?? '')) score -= 25
-
-  const bounded = Math.max(0, Math.min(100, score))
-  const band = bounded >= 75 ? 'hot' : bounded >= 50 ? 'warm' : 'cold'
-  const responseTime = band === 'hot' ? 'within 1 hour' : band === 'warm' ? 'same day' : 'within 2 days'
-  return { score: bounded, band, responseTime }
-}
-
 export async function submitLead(raw: unknown) {
   const parsed = leadSchema.safeParse(raw)
   if (!parsed.success) return { ok: false as const, error: 'Please check your answers and try again.' }
 
   const result = scoreLead(parsed.data)
+  const responseTime = result.band === 'hot' ? 'within 1 hour' : result.band === 'warm' ? 'same day' : 'within 2 days'
   const supabase = createPrivilegedClient()
   const { error } = await supabase.from('leads').insert({
     ...parsed.data,
     notes: parsed.data.notes || null,
     score: result.score,
     band: result.band,
-    reasons: { source: 'qualification-form' },
+    reasons: result.reasons,
     ai_summary: null,
-    next_action: result.responseTime,
+    next_action: responseTime,
   })
   if (error) return { ok: false as const, error: 'We could not save your request. Please try again.' }
-  return { ok: true as const, band: result.band, responseTime: result.responseTime }
+  return { ok: true as const, band: result.band, responseTime }
 }
 
 export async function updateLeadStatus(id: string, status: 'new' | 'contacted' | 'viewing' | 'closed') {
