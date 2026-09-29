@@ -21,7 +21,7 @@ export function LeadCapture() {
   const [pending, startTransition] = useTransition()
   const t = copy[lang]
   const set = (key: keyof Form, value: string) => setForm((current) => ({ ...current, [key]: value }))
-  const valid = step === 0 ? !!form.intent : step === 1 ? Number(form.budget_aed) >= 0 && form.budget_aed !== '' : step === 2 ? !!form.timeline : step === 3 ? form.area.trim().length >= 2 : step === 4 ? form.name.trim().length >= 2 && /^\+9715\d{8}$/.test(form.phone.replace(/[\s-]/g, '')) : true
+  const valid = step === 0 ? !!form.intent : step === 1 ? Number(form.budget_aed) >= 0 && form.budget_aed !== '' : step === 2 ? !!form.timeline : step === 3 ? form.area.trim().length >= 2 : step === 4 ? form.name.trim().length >= 1 && /^[+]?\d[\d\s-]*$/.test(form.phone.trim()) && form.phone.replace(/\D/g, '').length >= 7 && form.phone.replace(/\D/g, '').length <= 15 : true
 
   function submit() {
     setError('')

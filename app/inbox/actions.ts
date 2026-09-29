@@ -9,8 +9,8 @@ const leadSchema = z.object({
   budget_aed: z.coerce.number().int().min(0).max(1_000_000_000),
   timeline: z.enum(['immediate', '1-3m', '3-6m', '6m+']),
   area: z.string().trim().min(2).max(120),
-  name: z.string().trim().min(2).max(120),
-  phone: z.string().trim().transform((value) => value.replace(/[\s-]/g, '')).pipe(z.string().regex(/^\+9715\d{8}$/)),
+  name: z.string().trim().min(1).max(120),
+  phone: z.string().trim().refine((value) => /^[+]?\d[\d\s-]*$/.test(value) && value.replace(/\D/g, '').length >= 7 && value.replace(/\D/g, '').length <= 15, 'Please enter a valid phone number.'),
   notes: z.string().trim().max(2000).optional().default(''),
   lang: z.enum(['en', 'ar']),
 })
