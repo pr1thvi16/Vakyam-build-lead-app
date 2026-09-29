@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'Nest Dubai | Find your next property',
+  description: 'A quick, human property concierge for buying, investing, renting, or listing in Dubai.',
   generator: 'v0.app',
   icons: {
     icon: [
