@@ -48,7 +48,7 @@ async function summarizeLeadNotes(notes: string, lang: 'en' | 'ar'): Promise<AiL
     const text = payload.content?.find((item) => item.type === 'text')?.text
     if (!text) return null
 
-    const jsonText = text.match(/\\{[\\s\\S]*\\}/)?.[0]
+       const jsonText = text.match(/\{[\s\S]*\}/)?.[0]
     if (!jsonText) return null
     const parsed = aiLeadSummarySchema.safeParse(JSON.parse(jsonText))
     return parsed.success ? parsed.data : null
