@@ -22,6 +22,7 @@ export const CONFIG = {
     offplan: 14,
     tenant: 10,
     landlord: 9,
+    office: 11,
   },
   targetAreas: [
     'Dubai Marina',

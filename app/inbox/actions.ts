@@ -5,8 +5,9 @@ import { createPrivilegedClient } from '@/lib/supabase/server'
 import { scoreLead } from '@/lib/scoring'
 
 const leadSchema = z.object({
-  intent: z.enum(['buyer', 'offplan', 'tenant', 'landlord']),
+  intent: z.enum(['buyer', 'offplan', 'tenant', 'landlord', 'office']),
   budget_aed: z.coerce.number().int().min(0).max(1_000_000_000),
+  people_count: z.coerce.number().int().min(1).max(100000).optional(),
   timeline: z.enum(['immediate', '1-3m', '3-6m', '6m+']),
   area: z.string().trim().min(2).max(120),
   name: z.string().trim().min(1).max(120),
@@ -67,6 +68,7 @@ export async function submitLead(raw: unknown) {
   const supabase = createPrivilegedClient()
   const { error } = await supabase.from('leads').insert({
     ...parsed.data,
+    people_count: parsed.data.intent === 'office' ? parsed.data.people_count ?? null : null,
     notes: parsed.data.notes || null,
     score: result.score,
     band: result.band,
