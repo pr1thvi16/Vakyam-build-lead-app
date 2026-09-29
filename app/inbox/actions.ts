@@ -78,10 +78,17 @@ export async function submitLead(raw: unknown) {
   return { ok: true as const, band: result.band, responseTime }
 }
 
+const statusSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(['new', 'contacted', 'viewing', 'closed']),
+})
+
 export async function updateLeadStatus(id: string, status: 'new' | 'contacted' | 'viewing' | 'closed') {
+  const parsed = statusSchema.safeParse({ id, status })
+  if (!parsed.success) return { ok: false as const }
   const supabase = await import('@/lib/supabase/server').then(({ createClient }) => createClient())
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const }
-  const { error } = await supabase.from('leads').update({ status }).eq('id', id)
+  const { error } = await supabase.from('leads').update({ status: parsed.data.status }).eq('id', parsed.data.id)
   return { ok: !error }
 }
