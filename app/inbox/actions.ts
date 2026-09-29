@@ -10,7 +10,7 @@ const leadSchema = z.object({
   timeline: z.enum(['immediate', '1-3m', '3-6m', '6m+']),
   area: z.string().trim().min(2).max(120),
   name: z.string().trim().min(2).max(120),
-  phone: z.string().trim().regex(/^\+971\s?5\d{8}$/),
+  phone: z.string().trim().transform((value) => value.replace(/[\s-]/g, '')).pipe(z.string().regex(/^\+9715\d{8}$/)),
   notes: z.string().trim().max(2000).optional().default(''),
   lang: z.enum(['en', 'ar']),
 })
