@@ -71,8 +71,8 @@ export async function submitLead(raw: unknown) {
     score: result.score,
     band: result.band,
     reasons: result.reasons,
-    ai_summary: aiSummary?.summary || null,
-    next_action: aiSummary?.next_action || null,
+    ai_summary: aiSummary?.summary ?? '',
+    next_action: aiSummary?.next_action ?? '',
   })
   if (error) return { ok: false as const, error: 'We could not save your request. Please try again.' }
   return { ok: true as const, band: result.band, responseTime }
