@@ -43,8 +43,6 @@ Then open http://localhost:3000.
 | `SUPABASE_SECRET_KEY` | yes | Server-only key the form uses to save leads (the old `SUPABASE_SERVICE_ROLE_KEY` also works). Never put this in client code. |
 | `ANTHROPIC_API_KEY` | no | Turns on AI summaries |
 | `ANTHROPIC_MODEL` | no | Use a different model for summaries |
-| `NEXT_PUBLIC_SITE_URL` | no | Public URL of the site |
-| `NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL` | no | Auth redirect for local dev |
 
 ## How leads are scored
 
