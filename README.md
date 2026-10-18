@@ -99,6 +99,12 @@ supabase/
 - Negation only catches the phrases in the list, not every way someone might say "not yet".
 - There are no tests. `scoreLead()` is a plain function, so that's where I'd start.
 
+## AI use
+
+- The first version of the UI was generated with v0.
+- An AI assistant (Claude) helped write this README and the `supabase/schema.sql` file.
+- The running app uses Claude to summarise lead notes (see "The AI summary" above). It does not affect scoring.
+
 ## Deploying
 
 It's on Vercel. Add the same environment variables in the project settings, and every push to `main` deploys.
