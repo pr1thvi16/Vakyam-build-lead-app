@@ -57,7 +57,7 @@ The rules are all in one `CONFIG` block at the top of `lib/scoring.ts`, so chang
 | Urgent notes | +8 if the notes say something like "urgent", "asap", "this week" or the Arabic equivalent |
 | Negation | The urgency bonus is dropped if the notes also say things like "not ready yet", "just browsing" or "maybe later" (and Arabic versions) |
 
-Bands: 60 and up is hot, 35 to 59 is warm, below 35 is cold. The visitor is told we'll reply within 1 hour, the same day, or within 2 days, depending on the band.
+Bands: 60 and up is hot, 35 to 59 is warm, below 35 is cold. The confirmation screen changes with the band: hot says the team will be in touch within a few hours, warm says shortly, cold says within 2 days. The server also returns a response time (1 hour, same day, 2 days), but the form doesn't show that value yet.
 
 Each lead also stores a list of reasons, like `+22 budget AED 3,500,000`, so an agent can see exactly where the score came from.
 
