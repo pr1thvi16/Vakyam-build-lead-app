@@ -26,7 +26,7 @@ export function LeadCapture() {
   function submit() {
     setError('')
     startTransition(async () => {
-      const response = await submitLead({ ...form, budget_aed: form.budget_aed, people_count: form.people_count, lang })
+      const response = await submitLead({ ...form, budget_aed: form.budget_aed, people_count: form.intent === 'office' ? form.people_count : undefined, lang })
       if (response.ok) setResult({ responseTime: response.responseTime, band: response.band })
       else setError(response.error)
     })

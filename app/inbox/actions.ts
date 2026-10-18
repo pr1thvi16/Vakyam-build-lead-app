@@ -1,6 +1,7 @@
 'use server'
 
 import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
 import { createPrivilegedClient } from '@/lib/supabase/server'
 import { scoreLead } from '@/lib/scoring'
 
@@ -92,5 +93,6 @@ export async function updateLeadStatus(id: string, status: 'new' | 'contacted' |
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const }
   const { error } = await supabase.from('leads').update({ status: parsed.data.status }).eq('id', parsed.data.id)
+  if (!error) revalidatePath('/inbox')
   return { ok: !error }
 }
